@@ -46,7 +46,7 @@ jobs:
       with:
         name: Electron-App-Windows
         path: 'build'
-
+#
     # - name: Generate Windows Installer with Squirrel
     #   run: |
     #     cd build
