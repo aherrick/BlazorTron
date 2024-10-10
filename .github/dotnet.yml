@@ -1,0 +1,64 @@
+name: Build and Publish Electron.NET App
+
+on:
+  push:
+    branches:
+      - main  # Change this to your release branch if necessary
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Setup .NET Core SDK
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.x' # Set this to the version of .NET Core you are using
+
+    - name: Install Electron.NET CLI
+      run: dotnet tool install ElectronNET.CLI --tool-path ./tools
+
+    - name: Restore NuGet Packages
+      run: dotnet restore
+
+    - name: Build the Electron.NET App
+      run: dotnet build
+
+    - name: Publish Electron.NET to Windows
+      run: |
+        ./tools/electronize build /target win
+
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: Electron-App-Windows
+        path: 'obj/desktop/win/**/*' # Path where Electron.NET stores the output Windows build
+
+  publish:
+    runs-on: windows-latest
+    needs: build
+    steps:
+    - name: Download Build Artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: Electron-App-Windows
+        path: 'build'
+
+    # - name: Generate Windows Installer with Squirrel
+    #   run: |
+    #     cd build
+    #     npx electron-builder --win --config electron-builder.json
+
+    # - name: Create Release
+    #   uses: softprops/action-gh-release@v1
+    #   with:
+    #     files: |
+    #       build/*.exe # Adjust this path to where the installer is generated
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    # - name: Clean up after build
+    #   run: rm -rf build/
