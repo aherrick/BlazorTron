@@ -16,7 +16,7 @@ jobs:
     - name: Setup .NET Core SDK
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '9.x' # Set this to the version of .NET Core you are using
+        dotnet-version: '9.0.x' # Set this to the version of .NET Core you are using
 
     - name: Install Electron.NET CLI
       run: dotnet tool install --global ElectronNET.CLI
