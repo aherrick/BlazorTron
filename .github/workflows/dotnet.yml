@@ -17,12 +17,6 @@ jobs:
         dotnet-version: 9.0.x
         #dotnet-quality: 'preview'
 
-    - name: Install Electron.NET CLI
-      run: dotnet tool install --global ElectronNET.CLI
-
-    - name: Publish Electron.NET to Windows
-      run: electronize build /target win
-
     - name: Output Run Attempt
       run: echo ${{ github.run_attempt }}
 
@@ -34,6 +28,13 @@ jobs:
       run: 'sed -i "s|\"buildVersion\": \".*\"|\"buildVersion\": \"$BUILD_VERSION_UPDATE\"|g" electron.manifest.json'
       shell: bash
 
+    - name: Install Electron.NET CLI
+      run: dotnet tool install --global ElectronNET.CLI
+
+    - name: Publish Electron.NET to Windows
+      run: electronize build /target win
+
+
     # - name: Write release version
     #   run: |
     #     VERSION=${GITHUB_REF_NAME#v}
@@ -42,7 +43,7 @@ jobs:
     - name: Release
       uses: softprops/action-gh-release@v2
       with:
-        files: bin/Desktop/BlazorTron*.exe # forward slashes MUST be used here, otherwise no artifacts will be found
+        files: bin/Desktop/*.exe # forward slashes MUST be used here, otherwise no artifacts will be found
         tag_name: ${{ env.BUILD_VERSION_UPDATE }}
 
 
