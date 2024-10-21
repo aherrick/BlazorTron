@@ -10,13 +10,12 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v3
-
-    - name: Setup .NET Core SDK
+    - uses: actions/checkout@v3
+    - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '9.0.x' # Set this to the version of .NET Core you are using
+        dotnet-version: 9.0.x
+        #dotnet-quality: 'preview'
 
     - name: Install Electron.NET CLI
       run: dotnet tool install --global ElectronNET.CLI
