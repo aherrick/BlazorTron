@@ -16,30 +16,53 @@ jobs:
     - name: Setup .NET Core SDK
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '8.x' # Set this to the version of .NET Core you are using
+        dotnet-version: '9.x' # Set this to the version of .NET Core you are using
 
     - name: Install Electron.NET CLI
-      run: dotnet tool install ElectronNET.CLI --tool-path ./tools
+      run: dotnet tool install --global ElectronNET.CLI
 
     - name: Publish Electron.NET to Windows
-      run: |
-        ./tools/electronize build /target win
+      run: electronize build /target win
 
-    - name: Upload Build Artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: Electron-App-Windows
-        path: 'obj/desktop/win/**/*' # Path where Electron.NET stores the output Windows build
+    - name: Output Run Attempt
+      run: echo ${{ github.run_attempt }}
 
-  publish:
-    runs-on: windows-latest
-    needs: build
-    steps:
-    - name: Download Build Artifacts
-      uses: actions/download-artifact@v3
+    - name: get Version
+      run:  echo "BUILD_VERSION_UPDATE=1.0.${{ github.run_attempt }}" >> $GITHUB_ENV
+      shell: bash
+
+    - name: set client version
+      run: 'sed -i "s|\"buildVersion\": \".*\"|\"buildVersion\": \"$BUILD_VERSION_UPDATE\"|g" electron.manifest.json'
+      shell: bash
+
+    # - name: Write release version
+    #   run: |
+    #     VERSION=${GITHUB_REF_NAME#v}
+    #     echo Version: $VERSION
+    #     echo "VERSION=$VERSION" >> $GITHUB_ENV
+    - name: Release
+      uses: softprops/action-gh-release@v2
       with:
-        name: Electron-App-Windows
-        path: 'build'
+        files: bin/Desktop/BlazorTron*.exe # forward slashes MUST be used here, otherwise no artifacts will be found
+        tag_name: ${{ env.BUILD_VERSION_UPDATE }}
+
+
+
+  #   - name: Upload Build Artifacts
+  #     uses: actions/upload-artifact@v3
+  #     with:
+  #       name: Electron-App-Windows
+  #       path: 'obj/desktop/win/**/*' # Path where Electron.NET stores the output Windows build
+
+  # publish:
+  #   runs-on: windows-latest
+  #   needs: build
+  #   steps:
+  #   - name: Download Build Artifacts
+  #     uses: actions/download-artifact@v3
+  #     with:
+  #       name: Electron-App-Windows
+  #       path: 'build'
 #
     # - name: Generate Windows Installer with Squirrel
     #   run: |
