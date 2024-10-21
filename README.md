@@ -1,4 +1,12 @@
 # BlazorTron
  
- Debug: dotnet electronize start
- Release: dotnet electronize build /target win
+### Debug: 
+```
+dotnet electronize start
+```
+ 
+### Release: 
+```
+dotnet electronize build /target win
+```
+
