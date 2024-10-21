@@ -18,7 +18,7 @@ jobs:
         #dotnet-quality: 'preview'
 
     - name: Output Run Attempt
-      run: echo ${{ github.run_attempt }}
+      run: echo ${{ github.run_id }}
 
     - name: get Version
       run:  echo "BUILD_VERSION_UPDATE=1.0.${{ github.run_id }}" >> $GITHUB_ENV
