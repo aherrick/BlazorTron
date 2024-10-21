@@ -21,7 +21,7 @@ jobs:
       run: echo ${{ github.run_attempt }}
 
     - name: get Version
-      run:  echo "BUILD_VERSION_UPDATE=1.0.${{ github.run_attempt }}" >> $GITHUB_ENV
+      run:  echo "BUILD_VERSION_UPDATE=1.0.${{ github.run_id }}" >> $GITHUB_ENV
       shell: bash
 
     - name: set client version
